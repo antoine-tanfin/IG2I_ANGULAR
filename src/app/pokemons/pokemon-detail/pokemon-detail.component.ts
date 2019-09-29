@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PokemonService } from '../../services/pokemon.service';
-import { ActivatedRoute } from '@angular/router';
-import { Pokemon } from '../../services/pokemon.model';
-import { Location } from '@angular/common';
+import { PokemonService } from '../services/pokemon.service';
+import { Pokemon } from '../services/pokemon.model';
 
 @Component({
   selector: 'app-pokemon-detail',
@@ -11,21 +9,22 @@ import { Location } from '@angular/common';
 })
 export class PokemonDetailComponent implements OnInit {
   
-  @Input() pokemon: Pokemon;
+  pokemon: Pokemon;
+  @Input() id: number;
 
-  constructor(private route : ActivatedRoute, private pokemonService: PokemonService, private location : Location) { }
+  // constructor(private route : ActivatedRoute, private pokemonService: PokemonService, private location : Location) { }
+  constructor(private pokemonService: PokemonService) { }
 
-  ngOnInit() {
-    this.getHero();
+  ngOnInit() {}
+
+  ngOnChanges() {
+    this.getpokemon();
   }
 
-  getHero(){
-    const id = +this.route.snapshot.paramMap.get('id');
-    this.pokemonService.getPokemonDetails(id).subscribe(pokemon => this.pokemon = pokemon);
-  };
-
-  goBack(){
-    this.location.back();
+  getpokemon() {
+    this.pokemonService.getPokemonById(this.id).subscribe((result: Pokemon) => {
+      this.pokemon = result;
+    });
   }
 
 }

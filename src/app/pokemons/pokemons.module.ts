@@ -10,16 +10,22 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatDividerModule } from "@angular/material/divider";
 
 
 import { PokemonListComponent } from './pokemon-list/pokemon-list.component';
 import { PokemonDetailComponent } from './pokemon-detail/pokemon-detail.component';
+import { PokedexComponent } from './pokedex/pokedex.component';
 
 
 @NgModule({
   declarations: [
     PokemonListComponent,
-    PokemonDetailComponent
+    PokemonDetailComponent,
+    PokedexComponent
   ],
   imports: [
     CommonModule,
@@ -32,6 +38,10 @@ import { PokemonDetailComponent } from './pokemon-detail/pokemon-detail.componen
     MatButtonModule,
     MatIconModule,
     InfiniteScrollModule,
+    MatSidenavModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDividerModule
   ],
   exports:[
     PokemonListComponent

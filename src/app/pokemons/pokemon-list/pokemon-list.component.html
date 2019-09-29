@@ -1,11 +1,29 @@
+<div class="search">
+  <mat-form-field appearance="standard">
+    <input
+      matInput
+      #searchPokemon
+      type="search"
+      placeholder="Rechercher par nom"
+      (input)="search(searchPokemon.value)"
+    />
+  </mat-form-field>
+</div>
+
+<mat-divider></mat-divider>
 
 <mat-nav-list
-infiniteScroll
-(scrolled)="onScroll()"
+  class="pokemon-list"
+  infiniteScroll
+  [scrollWindow]="false"
+  (scrolled)="onScroll()"
 >
-  <mat-list-item *ngFor="let pokemonShort of pageData?.data" routerLink="/pokedex/{{pokemonShort.id}}">
-    <img matListAvatar src="assets/img/sprites/{{pokemonShort.id}}.png" alt="...">
-    <h3 matLine><span> {{pokemonShort.id}}. </span>{{pokemonShort.name}}</h3>
+  <ng-container *ngIf="pageData">
+    <!-- <mat-list-item *ngFor="let pokemonShort of pageData?.data" routerLink="/pokedex/{{pokemonShort.id}}"> -->
+    <mat-list-item *ngFor="let pokemon of pageData?.data" (click)="onSelect(pokemon.id)" class="element">
+      <img matListAvatar src="assets/img/sprites/{{pokemon.id}}.png" alt="..."> 
+      <h3 matLine><span> {{pokemon.id}}. </span>{{pokemon.name}}</h3>
       <!-- <span class="demo-2"> -- {{message.content}} </span> -->
-  </mat-list-item>
+    </mat-list-item>
+  </ng-container>
 </mat-nav-list>

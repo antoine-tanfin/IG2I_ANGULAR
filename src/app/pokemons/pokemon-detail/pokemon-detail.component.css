@@ -1,3 +1,8 @@
 .pokecard {
     max-width: 450px;
 }
+
+.text-inside-grid {
+    position: absolute;
+    left: 5px;
+  }

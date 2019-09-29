@@ -1,0 +1,18 @@
+<!-- <mat-sidenav-container>
+        <mat-sidenav mode="side" opened 
+            [fixedInViewport]="true">
+        <app-pokemon-list></app-pokemon-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container> -->
+
+<mat-drawer-container class="pokedex-container">
+  <mat-drawer mode="side" class="pokedex-drawer" opened disableClose>
+      <app-pokemon-list (itemChanged)="setDetail($event)"></app-pokemon-list>
+  </mat-drawer>
+  <mat-drawer-content>
+      <app-pokemon-detail [id]="selectedId"></app-pokemon-detail>
+  </mat-drawer-content>
+</mat-drawer-container>

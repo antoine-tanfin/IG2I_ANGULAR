@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { PageData,PokemonShort } from '../../services/pokemon.model';
-import { PokemonService } from '../../services/pokemon.service';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { PageData } from '../services/pokemon.model';
+import { PokemonService } from '../services/pokemon.service';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -11,21 +13,64 @@ export class PokemonListComponent implements OnInit {
 
   pageData: PageData;
 
-  constructor(private pokemonService: PokemonService) {
-    this.pokemonService.getPokemonsData(0,20).subscribe(pageData => this.pageData = pageData);
-  }
+  @Output() itemChanged = new EventEmitter<number>();
+
+  //searchBar var
+  private searchTerms = new Subject<string>();
+  term: string = "";
+  //fetchData var
+  offset: number = 0;
+  limit: number = 20;
+
+
+  constructor(private pokemonService: PokemonService) {}
 
   ngOnInit() {
+    this.fetchPokemons();
+
+    this.searchTerms.pipe(debounceTime(300))
+      .pipe(distinctUntilChanged())
+      .pipe(
+        switchMap((term: string) => this.pokemonService.getPokemonByString(term, this.offset, this.limit))
+      )
+      .subscribe(this.subscriptionsRoutine);
   }
 
-  
+  onSelect(id: number) {
+    this.itemChanged.emit(id);
+  }
 
   onScroll() {
-    this.pokemonService.getPokemonsData(this.pageData.offset+20,20).subscribe(pageData => {
-      this.pageData.data = this.pageData.data.concat(pageData.data);
-      this.pageData.offset = this.pageData.offset+20;
-    });
+    console.log(`PokemonService : scrolled`);
+    this.fetchPokemons();
   }
 
+  private fetchPokemons() {
+    if (this.term.length > 0) {
+      this.pokemonService.getPokemonByString(this.term, this.offset,this.limit)
+        .subscribe(this.subscriptionsRoutine);
+    } else {
+      this.pokemonService.getPokemonsData(this.offset, this.limit)
+        .subscribe(this.subscriptionsRoutine);
+    }
+  }
+
+  search(term: string) {
+    this.pageData = null
+    this.offset = 0;
+    this.term = term;
+    if (term.length > 0) {
+      console.log(`PokemonService : seorched`);
+      this.searchTerms.next(term);
+    } else {
+      this.fetchPokemons();
+    }
+  }
+
+  subscriptionsRoutine = (result: PageData) => {
+    this.pageData = result;
+    if(result) this.offset += result.data.length;
+    console.log(this.offset);
+  };
 
 }
